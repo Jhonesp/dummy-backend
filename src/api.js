@@ -1,8 +1,8 @@
-const express = require('express');
-const serverless = require('serverless-http');
-const app = express();
-const router = express.Router();
+const express = require('express')
+const bodyParser = require('body-parser');
+require('dotenv').config()
 
+const app = express()
 const mongoose = require('mongoose');
 app.use(bodyParser.json());
 
@@ -15,6 +15,10 @@ app.use((req, res, next) => {
     next();
   });
 
+app.get('/', (req, res) =>{
+    res.json({mssg: 'Welcome to the app'})
+} )
+
 const Schema = mongoose.Schema
 
 const notaSchema = new Schema({
@@ -24,13 +28,13 @@ const notaSchema = new Schema({
 
 Nota = mongoose.model('Nota', notaSchema)
 
-router.get('/posts', async (req, res) => {
+app.get('/posts', async (req, res) => {
     const storedPosts = await Nota.find({});
     // await new Promise((resolve, reject) => setTimeout(() => resolve(), 1500));
     res.json({ posts: storedPosts });
   });
 
-router.post('/posts', async (req, res) => {
+app.post('/posts', async (req, res) => {
     const postData = req.body;
     try{
         const guardarNota = await Nota.create(postData);
@@ -41,11 +45,13 @@ router.post('/posts', async (req, res) => {
 })
 
 mongoose.connect(process.env.MONGO_URI)
+    .then(()=>{
+        app.listen(3000, ()=>{
+            console.log("listening on port ", 3000);
+        })
+    })
     .catch((error) =>{
         console.log(error);
     })
 
-
-
-app.use('/.netlify/functions/api', router);
-module.exports.handler = serverless(app);
+module.exports.app
