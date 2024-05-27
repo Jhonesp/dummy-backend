@@ -1,9 +1,10 @@
 const express = require('express');
 const serverless = require('serverless-http');
 const app = express();
+const router = express.Router();
 
 const mongoose = require('mongoose');
-
+app.use(bodyParser.json());
 
 app.use((req, res, next) => {
     // Attach CORS headers
@@ -23,13 +24,13 @@ const notaSchema = new Schema({
 
 Nota = mongoose.model('Nota', notaSchema)
 
-app.get('/.netlify/functions/posts', async (req, res) => {
+router.get('/posts', async (req, res) => {
     const storedPosts = await Nota.find({});
     // await new Promise((resolve, reject) => setTimeout(() => resolve(), 1500));
     res.json({ posts: storedPosts });
   });
 
-app.post('/.netlify/functions/posts', async (req, res) => {
+router.post('/posts', async (req, res) => {
     const postData = req.body;
     try{
         const guardarNota = await Nota.create(postData);
@@ -44,10 +45,7 @@ mongoose.connect(process.env.MONGO_URI)
         console.log(error);
     })
 
-app.use(bodyParser.json());
-const handler = serverless(app);
 
-module.exports.handler = async(event, context) =>{
-    const result = await handler(event, context);
-    return result;
-}
+
+app.use('/.netlify/functions/api', router);
+module.exports.handler = serverless(app);
