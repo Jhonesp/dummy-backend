@@ -47,7 +47,7 @@ app.post('/posts', async (req, res) => {
 app.delete('/delete', async(req, res) =>{
     const idDelete = req.body.id;
     try{
-        const res = await Nota.deleteOne({ _id: id });
+        const res = await Nota.deleteOne({ _id: idDelete });
         res.status(200).json(Nota)
     }catch(error){
         res.status(400).json({error: error.message})
