@@ -44,6 +44,16 @@ app.post('/posts', async (req, res) => {
     }
 })
 
+app.delete('/delete', async(req, res) =>{
+    const idDelete = req.body.id;
+    try{
+        const res = await Nota.deleteOne({ _id: id });
+        res.status(200).json(Nota)
+    }catch(error){
+        res.status(400).json({error: error.message})
+    }
+})
+
 mongoose.connect(process.env.MONGO_URI)
     .then(()=>{
         app.listen(3000, ()=>{
