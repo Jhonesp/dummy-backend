@@ -1,10 +1,12 @@
 const express = require('express')
 const bodyParser = require('body-parser');
+const cors = require('cors')
 require('dotenv').config()
 
 const app = express()
 const mongoose = require('mongoose');
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use((req, res, next) => {
     // Attach CORS headers
@@ -39,6 +41,16 @@ app.post('/posts', async (req, res) => {
     try{
         const guardarNota = await Nota.create(postData);
         res.status(200).json(guardarNota)
+    }catch(error){
+        res.status(400).json({error: error.message})
+    }
+})
+
+app.delete('/delete/:id', async(req, res) =>{
+    const idDelete = req.params.id;
+    try{
+        const res = await Nota.deleteOne({ _id: idDelete });
+        res.status(200).json(Nota)
     }catch(error){
         res.status(400).json({error: error.message})
     }
