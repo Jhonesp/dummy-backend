@@ -47,14 +47,18 @@ app.post('/posts', async (req, res) => {
 })
 
 app.delete('/delete/:id', async(req, res) =>{
-    const idDelete = req.params.id;
-    try{
-        const res = await Nota.deleteOne({ _id: idDelete });
-        res.status(200).json({
-            message: 'deleted',
-        });
-    }catch(error){
-        res.status(500).json({error: error.message})
+    const id = req.params.id;
+    try {
+        const result = await Nota.findByIdAndDelete(id);
+
+        if (!result) {
+            return res.status(404).send('Post not found');
+        }
+
+        res.status(200).send('Post deleted successfully');
+    } catch (error) {
+        console.error('Error deleting post:', error);
+        res.status(500).send('Internal Server Error');
     }
 })
 
