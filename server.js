@@ -44,7 +44,7 @@ app.post('/posts', async (req, res) => {
     }
 })
 
-app.delete('/delete:id', async(req, res) =>{
+app.delete('/delete/:id', async(req, res) =>{
     const idDelete = req.params.id;
     try{
         const res = await Nota.deleteOne({ _id: idDelete });
