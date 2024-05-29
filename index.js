@@ -50,9 +50,11 @@ app.delete('/delete/:id', async(req, res) =>{
     const idDelete = req.params.id;
     try{
         const res = await Nota.deleteOne({ _id: idDelete });
-        res.status(200);
+        res.status(200).json({
+            message: 'deleted',
+        });
     }catch(error){
-        res.status(400).json({error: error.message})
+        res.status(500).json({error: error.message})
     }
 })
 
